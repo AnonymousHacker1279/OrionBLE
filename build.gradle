@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'idea'
+}
+
+group = 'tech.anonymoushacker1279'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:26.0.1'
+
+    implementation 'com.google.code.gson:gson:2.11.0'
+}
+
+processResources {
+    Properties properties = new Properties()
+    file(".env").withInputStream { properties.load(it) }
+
+    String orionBLEServerLocation = properties.getProperty("ORION_BLE_SERVER_LOCATION")
+    // Copy file into resources directory
+    from orionBLEServerLocation
+    into 'src/main/resources'
+}
+
+tasks.register('slimJar', Jar) {
+    archiveClassifier.set('slim')
+    from sourceSets.main.output
+    exclude 'OrionBLEServer.exe'
+}
+
+artifacts {
+    archives slimJar
+}
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifact jar
+            artifact slimJar
+        }
+    }
+    repositories {
+        maven {
+            name "AnonymousHacker1279"
+
+            String baseMavenUrl = "https://maven.anonymoushacker1279.tech/"
+            url version.contains("SNAPSHOT") ? baseMavenUrl + "snapshots" : baseMavenUrl + "releases"
+
+            credentials(PasswordCredentials)
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+    }
+}
