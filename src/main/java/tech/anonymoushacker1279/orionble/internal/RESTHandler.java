@@ -1,4 +1,4 @@
-package tech.anonymoushacker1279.orionble;
+package tech.anonymoushacker1279.orionble.internal;
 
 import com.google.gson.JsonObject;
 

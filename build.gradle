@@ -2,10 +2,11 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'idea'
+    id 'com.gradleup.shadow' version '8.3.5'
 }
 
 group = 'tech.anonymoushacker1279'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1-SNAPSHOT-2024.12.19-6'
 
 repositories {
     mavenCentral()
@@ -33,8 +34,20 @@ tasks.register('slimJar', Jar) {
     exclude 'OrionBLEServer.exe'
 }
 
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    dependencies {
+        exclude(dependency('org.jetbrains:annotations:.*'))
+    }
+}
+
 artifacts {
     archives slimJar
+    archives shadowJar
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 publishing {
@@ -42,6 +55,9 @@ publishing {
         register('mavenJava', MavenPublication) {
             artifact jar
             artifact slimJar
+            artifact sourcesJar
+            artifact javadocJar
+            artifact shadowJar
         }
     }
     repositories {

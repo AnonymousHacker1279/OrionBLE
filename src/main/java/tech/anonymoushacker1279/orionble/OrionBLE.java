@@ -8,6 +8,8 @@ import tech.anonymoushacker1279.orionble.devices.DeviceFilter;
 import tech.anonymoushacker1279.orionble.gatt.GATTCharacteristic;
 import tech.anonymoushacker1279.orionble.gatt.GATTNotification;
 import tech.anonymoushacker1279.orionble.gatt.GATTService;
+import tech.anonymoushacker1279.orionble.internal.APIEndpoints;
+import tech.anonymoushacker1279.orionble.internal.RESTHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,7 @@ public class OrionBLE {
 
 	private final RESTHandler restHandler;
 	private final Map<String, Thread> notificationThreads = new ConcurrentHashMap<>();
+	private final Map<String, Boolean> pausedThreads = new ConcurrentHashMap<>();
 	private ProcessHandle orionBLEServer;
 
 	/**
@@ -44,7 +47,6 @@ public class OrionBLE {
 		restHandler = new RESTHandler(client, address);
 
 		launchOrionBLEServer(serverAddress, port);
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> orionBLEServer.destroy()));
 	}
 
 	/**
@@ -110,6 +112,7 @@ public class OrionBLE {
 				processBuilder.inheritIO();
 				Process process = processBuilder.start();
 				orionBLEServer = process.toHandle();
+				Runtime.getRuntime().addShutdownHook(new Thread(() -> orionBLEServer.destroy()));
 			} catch (IOException e1) {
 				throw new RuntimeException("Failed to launch the backend server!");
 			}
@@ -247,6 +250,11 @@ public class OrionBLE {
 		Thread thread = new Thread(() -> {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
+					if (pausedThreads.getOrDefault(key, false)) {
+						Thread.sleep(100);
+						continue;
+					}
+
 					List<GATTNotification> notifications = getNotifications(device, service, characteristic);
 					if (!notifications.isEmpty()) {
 						notifications.forEach(consumer);
@@ -274,5 +282,32 @@ public class OrionBLE {
 		if (thread != null) {
 			thread.interrupt();
 		}
+
+		pausedThreads.remove(key);
+	}
+
+	/**
+	 * Pause a listener for notifications on a GATT characteristic. Useful in scenarios where you might need to
+	 * temporarily stop automatic processing.
+	 *
+	 * @param device         the {@link BLEDevice} to pause listening for notifications on
+	 * @param service        the {@link GATTService}
+	 * @param characteristic the {@link GATTCharacteristic}
+	 */
+	public void pauseNotificationListener(BLEDevice device, GATTService service, GATTCharacteristic characteristic) {
+		String key = device.address() + service.uuid() + characteristic.uuid();
+		pausedThreads.put(key, true);
+	}
+
+	/**
+	 * Resume a listener for notifications on a GATT characteristic.
+	 *
+	 * @param device         the {@link BLEDevice} to resume listening for notifications on
+	 * @param service        the {@link GATTService}
+	 * @param characteristic the {@link GATTCharacteristic}
+	 */
+	public void resumeNotificationListener(BLEDevice device, GATTService service, GATTCharacteristic characteristic) {
+		String key = device.address() + service.uuid() + characteristic.uuid();
+		pausedThreads.put(key, false);
 	}
 }

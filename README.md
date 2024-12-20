@@ -29,8 +29,7 @@ Windows platform.
 
 OrionBLE is broken into two separate parts: the `OrionBLE` Java library and the `OrionBLEServer` .NET application. The
 server backend exposes a REST API that the Java library communicates with to interact with BLE devices. The server
-is automatically included, so no additional setup is required. Of course, if you want a slim version, there is an
-artifact available that does not include the server.
+is automatically included, so no additional setup is required.
 
 ## How do I use it?
 
@@ -53,11 +52,13 @@ Then, add the following dependency to your project:
 ```groovy
 dependencies {
     implementation "tech.anonymoushacker1279:OrionBLE:<VERSION>"
-
 }
 ```
 
-The latest version can be found on the [releases page](https://github.com/AnonymousHacker1279/OrionBLE/releases).
+The latest version can be found on the [releases page](https://github.com/AnonymousHacker1279/OrionBLE/releases). There
+are three usable artifacts: the regular one, `slim`, and `all`. The regular one contains the library and its backend
+server, the `slim` one contains only the library, and the `all` one contains the library, server, and all dependencies
+(such as `gson`).
 
 The library is very simple to use. Here is an example of how to scan for BLE devices:
 

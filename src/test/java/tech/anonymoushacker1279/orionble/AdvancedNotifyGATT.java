@@ -32,6 +32,16 @@ public class AdvancedNotifyGATT {
 		// Let it run for 10 seconds for testing
 		Thread.sleep(10000);
 
+		System.out.println("Pausing listener...");
+		orion.pauseNotificationListener(device, service, characteristic);
+
+		Thread.sleep(5000);
+
+		System.out.println("Resuming listener...");
+		orion.resumeNotificationListener(device, service, characteristic);
+
+		Thread.sleep(5000);
+
 		orion.stopNotificationListener(device, service, characteristic);
 		orion.unregisterNotifyEvent(device, service, characteristic);
 		System.out.println("Stopping listener and unregistering notify event...");
