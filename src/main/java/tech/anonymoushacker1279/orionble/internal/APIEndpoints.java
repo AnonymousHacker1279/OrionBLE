@@ -6,6 +6,7 @@ package tech.anonymoushacker1279.orionble.internal;
 public enum APIEndpoints {
 	ROOT("/"),
 	DISCOVER_DEVICES("/devices/discover"),
+	CHECK_DEVICE_CONNECTION("/devices/%s"),
 	DISCOVER_GATT_SERVICES("/devices/%s/services"),
 	DISCOVER_GATT_CHARACTERISTICS("/devices/%s/service/%s"),
 	READ_GATT_CHARACTERISTIC("/devices/%s/service/%s/characteristic/%s/read"),

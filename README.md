@@ -27,7 +27,8 @@ Thus, OrionBLE was born, to provide a modern, easy-to-use, and well-documented J
 OrionBLE is *not* an implementation of JSR-82, but rather a custom implementation. As of now, it only supports the
 Windows platform.
 
-OrionBLE is broken into two separate parts: the `OrionBLE` Java library and the `OrionBLEServer` .NET application. The
+OrionBLE is broken into two separate parts: the OrionBLE Java library and
+the [OrionBLEServer](https://github.com/AnonymousHacker1279/OrionBLEServer) .NET application. The
 server backend exposes a REST API that the Java library communicates with to interact with BLE devices. The server
 is automatically included, so no additional setup is required.
 
@@ -37,13 +38,13 @@ Update your project's buildscript to include my Maven repository:
 
 ```groovy
 repositories {
-    maven {
-        url "https://maven.anonymoushacker1279.tech/releases"
-    }
-    // Alternatively, snapshot versions may be available under:
-    maven {
-        url "https://maven.anonymoushacker1279.tech/snapshots"
-    }
+	maven {
+		url "https://maven.anonymoushacker1279.tech/releases"
+	}
+	// Alternatively, snapshot versions may be available under:
+	maven {
+		url "https://maven.anonymoushacker1279.tech/snapshots"
+	}
 }
 ```
 
@@ -51,7 +52,7 @@ Then, add the following dependency to your project:
 
 ```groovy
 dependencies {
-    implementation "tech.anonymoushacker1279:OrionBLE:<VERSION>"
+	implementation "tech.anonymoushacker1279:OrionBLE:<VERSION>"
 }
 ```
 

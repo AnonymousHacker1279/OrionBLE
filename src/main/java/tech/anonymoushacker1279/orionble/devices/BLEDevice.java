@@ -2,6 +2,7 @@ package tech.anonymoushacker1279.orionble.devices;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.ApiStatus;
 import tech.anonymoushacker1279.orionble.OrionBLE;
@@ -40,6 +41,16 @@ public record BLEDevice(String name, String address, boolean isPaired) {
 		}
 
 		return devices;
+	}
+
+	public static boolean checkDeviceConnection(String response) {
+		Gson gson = new GsonBuilder().create();
+		try {
+			String connected = gson.fromJson(response, Map.class).get("Connected").toString();
+			return Boolean.parseBoolean(connected);
+		} catch (JsonSyntaxException e) {
+			return false;
+		}
 	}
 
 	@Override

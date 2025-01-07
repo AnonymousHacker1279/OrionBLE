@@ -1,8 +1,8 @@
-module OrionBLE.main {
-	requires org.jetbrains.annotations;
+module tech.anonymoushacker1279.OrionBLE {
+	requires static org.jetbrains.annotations;
 	requires java.desktop;
 	requires java.net.http;
-	requires com.google.gson;
+	requires transitive com.google.gson;
 
 	exports tech.anonymoushacker1279.orionble;
 	exports tech.anonymoushacker1279.orionble.devices;

@@ -79,6 +79,10 @@ public class OrionBLE {
 				}
 			}
 		}
+
+		if (maxRetries == 0) {
+			throw new RuntimeException("Failed to connect to the backend server!");
+		}
 	}
 
 	/**
@@ -114,9 +118,14 @@ public class OrionBLE {
 				orionBLEServer = process.toHandle();
 				Runtime.getRuntime().addShutdownHook(new Thread(() -> orionBLEServer.destroy()));
 			} catch (IOException e1) {
-				throw new RuntimeException("Failed to launch the backend server!");
+				throw new RuntimeException("Failed to launch the backend server!", e1);
 			}
 		}
+	}
+
+	public boolean isDeviceConnected(String address) {
+		String response = restHandler.getRequest(APIEndpoints.CHECK_DEVICE_CONNECTION.getEndpoint(address));
+		return BLEDevice.checkDeviceConnection(response);
 	}
 
 	/**
